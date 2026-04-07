@@ -10,7 +10,7 @@ router.get("/:username", userController.listUserUsername);
 
 router.get("/id/:id", authenticateToken, userController.listUserID);
 
-router.post("", authenticateToken, userController.createUser);
+router.post("", userController.createUser);
 
 router.patch("/id/:id", authenticateToken, userController.updateUser);
 
