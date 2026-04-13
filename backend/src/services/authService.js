@@ -38,12 +38,12 @@ export async function loginUsername(username, password) {
 export async function loginEmail(email, password) {
   const userExists = await userService.getEmailLogin(email);
   if (!userExists) {
-    throw new Error("Usuário inválido");
+    throw new Error("Login inválido");
   }
 
   const passwordExists = await bcrypt.compare(password, userExists.password);
   if (!passwordExists) {
-    throw new Error("Senha inválida");
+    throw new Error("Login inválido");
   }
 
   const otp = crypto.randomInt(100000, 999999).toString();

@@ -25,7 +25,10 @@ export const passwordValidate = z.object({
     .regex(/[a-z]/, "A senha deve conter ao menos uma letra minúscula")
     .regex(/[A-Z]/, "A senha deve conter ao menos uma letra maiúscula")
     .regex(/\d/, "A senha deve conter ao menos um número")
-    .regex(/[@$!%*?&]/, "A senha deve conter ao menos um caractere especial"),
+    .regex(
+      /[@$!%*?&-]/,
+      "A senha deve conter ao menos um caractere especial, exceto ponto e underline",
+    ),
 });
 
 export const userBaseValidate = z.object({
