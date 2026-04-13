@@ -4,7 +4,7 @@ import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.get("", userController.listUsers);
+router.get("", authenticateToken, userController.listUsers);
 
 router.get("/:username", userController.listUserUsername);
 

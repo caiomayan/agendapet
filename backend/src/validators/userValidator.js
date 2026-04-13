@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const idValidate = z.object({
-  id: z.uuid("O UUID requisitado não está no formato correto"),
+  id: z.uuid("O ID não está no formato correto"),
 });
 
 export const usernameValidate = z.object({
@@ -20,12 +20,12 @@ export const usernameValidate = z.object({
 export const userBaseValidate = z.object({
   id: idValidate.shape.id.optional(),
   username: usernameValidate.shape.username,
-  email: z.email("E-mail não está no formato correto"),
+  email: z.email("O e-mail não está no formato correto"),
   name: z.string().min(3).max(100).optional(),
   password: z
     .string()
-    .min(8, "Mínimo de 8 caracteres")
-    .max(72, "Máximo de 72 caracteres"),
+    .min(8, "Senha com mínimo de 8 caracteres")
+    .max(72, "Senha com máximo de 72 caracteres"),
 });
 
 export const createUserValidate = userBaseValidate.omit({ id: true });
@@ -34,5 +34,10 @@ export const updateUserValidate = userBaseValidate.omit({ id: true }).partial();
 
 export const loginUsernameValidate = userBaseValidate.pick({
   username: true,
+  password: true,
+});
+
+export const loginEmailValidate = userBaseValidate.pick({
+  email: true,
   password: true,
 });

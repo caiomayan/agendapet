@@ -1,3 +1,5 @@
+import axios from "axios";
+import crypto from "crypto";
 import * as z from "zod";
 import * as userService from "../services/userService.js";
 import * as userValidator from "../validators/userValidator.js";
@@ -69,7 +71,32 @@ export async function listUsers(req, res) {
 export async function createUser(req, res) {
   try {
     const newUserValidated = userValidator.createUserValidate.parse(req.body);
+
+    if (newUserValidated.password) {
+      const sha1Hash = crypto
+        .createHash("sha1")
+        .update(newUserValidated.password)
+        .digest("hex")
+        .toUpperCase();
+
+      const leakPassword = await axios.get(
+        `https://api.pwnedpasswords.com/range/${sha1Hash.slice(0, 5)}`,
+      );
+
+      const leakPasswordResult = leakPassword.data
+        .split("\n")
+        .some((hash) => hash.startsWith(`${sha1Hash.slice(5)}`));
+
+      if (leakPasswordResult) {
+        return res.status(400).json({
+          message:
+            "A senha desejada não é segura o suficiente, pois há indícios de vazamentos na internet",
+        });
+      }
+    }
+
     const newUser = await userService.addUser(newUserValidated);
+
     res.status(201).json(newUser);
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -101,6 +128,35 @@ export async function updateUser(req, res) {
       req.body,
     );
 
+    if (id !== req.user.id) {
+      return res.status(403).json({
+        message: "Você não está autorizado a deletar outros usuários.",
+      });
+    }
+
+    if (updatedUserValidated.password) {
+      const sha1Hash = crypto
+        .createHash("sha1")
+        .update(newUserValidated.password)
+        .digest("hex")
+        .toUpperCase();
+
+      const leakPassword = await axios.get(
+        `https://api.pwnedpasswords.com/range/${sha1Hash.slice(0, 5)}`,
+      );
+
+      const leakPasswordResult = leakPassword.data
+        .split("\n")
+        .some((hash) => hash.startsWith(`${sha1Hash.slice(5)}`));
+
+      if (leakPasswordResult) {
+        return res.status(400).json({
+          message:
+            "A senha desejada não é segura o suficiente, pois há indícios de vazamentos",
+        });
+      }
+    }
+
     const updatedUser = await userService.updateUser(id, updatedUserValidated);
 
     if (!updatedUser) {
@@ -129,8 +185,16 @@ export async function updateUser(req, res) {
 
 export async function deleteUser(req, res) {
   console.log("Quem está tentando deletar: ", req.user.username);
+
   try {
     const { id } = userValidator.idValidate.parse(req.params);
+
+    if (req.params.id !== req.user.id) {
+      return res.status(403).json({
+        message: "Você não está autorizado a deletar outros usuários.",
+      });
+    }
+
     const deletedUser = await userService.deleteUser(id);
 
     if (!deletedUser) {

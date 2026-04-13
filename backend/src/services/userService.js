@@ -10,6 +10,15 @@ export async function getUserLogin(username) {
   return query.rows[0];
 }
 
+export async function getEmailLogin(email) {
+  const query = await pool.query(
+    "SELECT id, username, name, email, password FROM users WHERE email = $1",
+    [email],
+  );
+
+  return query.rows[0];
+}
+
 export async function getUserUsername(username) {
   const query = await pool.query(
     "SELECT id, username, name FROM users WHERE username = $1",

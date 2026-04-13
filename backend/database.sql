@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict 7YhRAkFJtCTeO7mKEunQFnvWh0Z5SBLyBwC9f4m9aFR8UbChVWijU3fWzz24OK2
-
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.1
 
@@ -96,6 +94,4 @@ CREATE TRIGGER update_user_updated_at BEFORE UPDATE ON public.users FOR EACH ROW
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict 7YhRAkFJtCTeO7mKEunQFnvWh0Z5SBLyBwC9f4m9aFR8UbChVWijU3fWzz24OK2
 

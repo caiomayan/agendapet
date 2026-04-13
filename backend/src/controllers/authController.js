@@ -1,16 +1,33 @@
 import * as authService from "../services/authService.js";
-import { loginUsernameValidate } from "../validators/userValidator.js";
+import * as userValidator from "../validators/userValidator.js";
 
 export async function login(req, res) {
   try {
-    const { username, password } = loginUsernameValidate.parse(req.body);
+    const { email, password } = userValidator.loginEmailValidate.parse(
+      req.body,
+    );
 
-    const userLogon = await authService.login(username, password);
+    const userVerifyLogon = await authService.loginEmail(email, password);
+
+    return res.status(200).json(userVerifyLogon);
+  } catch (e) {
+    return res.status(401).json({
+      message: e.message,
+    });
+  }
+}
+
+export async function verifyOtp(req, res) {
+  try {
+    const userLogon = await authService.verifyOtp(
+      req.body.email,
+      req.body.code,
+    );
 
     return res.status(200).json(userLogon);
   } catch (e) {
     return res.status(401).json({
-        message: e.message
-    })
+      message: e.message,
+    });
   }
 }
