@@ -85,10 +85,7 @@ export async function verifyOtp(email, code) {
 
   const otpDecoded = await bcrypt.compare(code, querySearch.rows[0].code);
 
-  if (
-    otpDecoded &&
-    new Date(querySearch.rows[0].expires_at) > new Date()
-  ) {
+  if (otpDecoded && new Date(querySearch.rows[0].expires_at) > new Date()) {
     await pool.query("DELETE FROM otp_tokens WHERE user_id = $1", [
       queryUserEmail.rows[0].id,
     ]);
@@ -109,6 +106,12 @@ export async function verifyOtp(email, code) {
       user: userWithoutPassword,
       token,
     };
+  } else if (new Date(querySearch.rows[0].expires_at) < new Date()) {
+    await pool.query("DELETE FROM otp_tokens WHERE user_id = $1", [
+      queryUserEmail.rows[0].id,
+    ]);
+
+    throw new Error("Código 2FA é inválido");
   } else {
     throw new Error("Código 2FA é inválido");
   }

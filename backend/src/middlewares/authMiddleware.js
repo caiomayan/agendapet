@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { rateLimit } from "express-rate-limit";
 import jwt from "jsonwebtoken";
 
 export function authenticateToken(req, res, next) {
@@ -24,3 +25,11 @@ export function authenticateToken(req, res, next) {
     });
   }
 }
+
+export const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 6,
+  message: {
+    message: "Muitas tentativas de login, tente novamente mais tarde",
+  },
+});

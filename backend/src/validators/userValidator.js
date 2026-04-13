@@ -50,6 +50,10 @@ export const userBaseValidate = z.object({
 
 export const createUserValidate = userBaseValidate.omit({ id: true });
 
+export const passwordLoginValidate = z.object({
+  password: z.string().max(72, "Máximo de 72 caracteres"),
+});
+
 export const updateUserValidate = userBaseValidate.omit({ id: true }).partial();
 
 export const loginUsernameValidate = userBaseValidate.pick({
@@ -57,9 +61,9 @@ export const loginUsernameValidate = userBaseValidate.pick({
   password: true,
 });
 
-export const loginEmailValidate = userBaseValidate.pick({
-  email: true,
-  password: true,
+export const loginEmailValidate = z.object({
+  email: userBaseValidate.shape.email,
+  password: passwordLoginValidate.shape.password,
 });
 
 export const verifyOtpValidate = z.object({
