@@ -47,11 +47,14 @@ export async function loginEmail(email, password) {
   }
 
   const otp = crypto.randomInt(100000, 999999).toString();
+
+  const otpHash = await bcrypt.hash(otp, 10);
+
   const expires = new Date(Date.now() + 10 * 60 * 1000);
 
   await pool.query(
     "INSERT INTO otp_tokens (user_id, code, expires_at) VALUES ($1, $2, $3)",
-    [userExists.id, otp, expires],
+    [userExists.id, otpHash, expires],
   );
 
   await mailer.sendOtpEmail(email, otp);
@@ -80,8 +83,10 @@ export async function verifyOtp(email, code) {
     throw new Error("Código 2FA não encontrado");
   }
 
+  const otpDecoded = await bcrypt.compare(code, querySearch.rows[0].code);
+
   if (
-    code === querySearch.rows[0].code &&
+    otpDecoded &&
     new Date(querySearch.rows[0].expires_at) > new Date()
   ) {
     await pool.query("DELETE FROM otp_tokens WHERE user_id = $1", [

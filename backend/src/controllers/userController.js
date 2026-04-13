@@ -137,7 +137,7 @@ export async function updateUser(req, res) {
     if (updatedUserValidated.password) {
       const sha1Hash = crypto
         .createHash("sha1")
-        .update(newUserValidated.password)
+        .update(updatedUserValidated.password)
         .digest("hex")
         .toUpperCase();
 
