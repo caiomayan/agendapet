@@ -1,6 +1,6 @@
+import * as z from "zod";
 import * as authService from "../services/authService.js";
 import * as userValidator from "../validators/userValidator.js";
-import * as z from "zod";
 
 export async function login(req, res) {
   try {
@@ -23,7 +23,22 @@ export async function login(req, res) {
 
     console.error(e);
 
-    return res.status(401).json({
+    switch (e.message) {
+      case "Usuário inválido":
+        return res.status(401).json({
+          message: e.message,
+        });
+      case "Código 2FA não encontrado":
+        return res.status(401).json({
+          message: e.message,
+        });
+      case "Login inválido":
+        return res.status(401).json({
+          message: e.message,
+        });
+    }
+
+    return res.status(500).json({
       message: e.message,
     });
   }

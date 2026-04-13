@@ -29,13 +29,16 @@ export async function getUserUsername(username) {
 }
 
 export async function getUserID(id) {
-  const query = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  const query = await pool.query(
+    "SELECT id, name, username, email, created_at FROM users WHERE id = $1",
+    [id],
+  );
 
   return query.rows[0];
 }
 
 export async function getUsers() {
-  const query = await pool.query("SELECT * FROM users");
+  const query = await pool.query("SELECT username, name FROM users");
 
   return query.rows;
 }

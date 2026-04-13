@@ -7,6 +7,14 @@ import * as userValidator from "../validators/userValidator.js";
 export async function listUserID(req, res) {
   try {
     const { id } = userValidator.idValidate.parse(req.params);
+
+    if (id !== req.user.id) {
+      return res.status(403).json({
+        message:
+          "Você não está autorizado a ver informações detalhadas de outros usuários",
+      });
+    }
+
     const listedUser = await userService.getUserID(id);
 
     if (!listedUser) {
@@ -130,7 +138,7 @@ export async function updateUser(req, res) {
 
     if (id !== req.user.id) {
       return res.status(403).json({
-        message: "Você não está autorizado a deletar outros usuários.",
+        message: "Você não está autorizado a atualizar outros usuários.",
       });
     }
 
@@ -184,7 +192,7 @@ export async function updateUser(req, res) {
 }
 
 export async function deleteUser(req, res) {
-  console.log("Quem está tentando deletar: ", req.user.username);
+  console.log("Quem está tentando deletar:", req.user.username);
 
   try {
     const { id } = userValidator.idValidate.parse(req.params);
