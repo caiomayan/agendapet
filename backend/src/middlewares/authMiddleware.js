@@ -32,4 +32,5 @@ export const loginLimiter = rateLimit({
   message: {
     message: "Muitas tentativas de login, tente novamente mais tarde",
   },
+  validate: { xForwardedForHeader: false },
 });
