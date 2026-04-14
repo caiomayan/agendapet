@@ -23,6 +23,12 @@ export async function login(req, res) {
 
     console.error(e);
 
+    if (e.code.includes("ETIMEDOUT")) {
+      return res.status(503).json({
+        message: "Serviço de e-mail indisponível",
+      });
+    }
+
     switch (e.message) {
       case "Usuário inválido":
         return res.status(401).json({

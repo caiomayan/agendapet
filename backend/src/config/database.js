@@ -10,7 +10,9 @@ const pool = new Pool({
 });
 
 pool.on("connect", () => {
-  console.log(`Banco de dados ${process.env.DB_NAME} recebeu transação com sucesso`);
+  console.log(
+    `Banco de dados ${process.env.DB_NAME} recebeu transação com sucesso`,
+  );
 });
 
 pool.on("error", (e) => {
