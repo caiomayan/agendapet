@@ -2,6 +2,7 @@
 
 Sistema de Agendamento para Clínicas Veterinárias
 
-## Tecnologias utilizadas no projeto até o momento
+## CHECK SISTEMA
 
-Backend: Node.js (Express, Helmet, Axios, Bcrypt, JWT, Zod, Driver do PostgreSQL, Nodemailer) + Banco de Dados PostgreSQL
+API: OK https://agendapet-six.vercel.app/ + banco postgres supabase
+FRONT: andamento
